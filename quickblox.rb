@@ -10,8 +10,13 @@ require 'base64'
 
 class Quickblox
 
-  def configs
-    config = YAML.load_file("config.yml")
+  def configs(options={})
+    if options.empty?
+        config = YAML.load_file("config.yml")
+    else
+        config = { "quickblox" => options }
+    end
+    
     @application_id = config["quickblox"]["application_id"]
     @auth_key = config["quickblox"]["auth_key"]
     @auth_secret = config["quickblox"]["auth_secret"]
@@ -22,12 +27,12 @@ class Quickblox
     @user_password=config["quickblox"]["user_password"]
     @device_platform= config["quickblox"]["device_platform"]
     @device_udid= config["quickblox"]["device_udid"]
-
+    
   end
 
 
-  def initialize
-    configs
+  def initialize(options={})
+    configs(options)
     @auth_uri=URI("http://"+@server.to_s+'/auth.json')
     @users_uri=URI("http://"+@server.to_s+'/users')
     @geodata_uri=URI("http://"+@server.to_s+'/geodata')
