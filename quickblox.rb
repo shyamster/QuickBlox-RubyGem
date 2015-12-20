@@ -1,5 +1,4 @@
 require 'net/http'
-require 'hmac-sha1'
 require 'json'
 require 'rest_client'
 require 'yaml'
@@ -84,7 +83,8 @@ class Quickblox
     hash.merge!({:user => {:login => @user_login, :password => @user_password, :owner_id => @user_owner_id}}) if type == 'user' || type == 'user_device'
     hash.merge!({:device => {:platform => @device_platform, :udid => @device_udid}}) if type == 'device' || type == 'user_device'
     normalized= normalize(hash)
-    signature = HMAC::SHA1.hexdigest(@auth_secret, normalized)
+    digest = OpenSSL::Digest.new('sha1')
+    signature = OpenSSL::HMAC.hexdigest(digest, @auth_secret, normalized)
     req = Net::HTTP::Post.new(@auth_uri.path)
     req.body = "#{normalized}&signature=#{signature}"
     response = Net::HTTP.start(@auth_uri.host, @auth_uri.port) do |http|
