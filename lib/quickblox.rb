@@ -1,6 +1,6 @@
 require 'net/http'
 require 'json'
-require 'rest_client'
+require 'rest-client'
 require 'yaml'
 require "uri"
 require "net/http/post/multipart"
